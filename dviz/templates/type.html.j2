@@ -2,11 +2,6 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-  <style>
-  body {
-    margin: 0 auto;
-  }
-  </style>
   <title>대한민국 교통사고 차트</title>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
@@ -24,7 +19,7 @@
       ]);
 
       var options = {
-        title: '사고유형별 발생건수',
+        title: '사고유형별 발생 비율',
         is3D: true,
       };
 
@@ -60,10 +55,15 @@
                 }
             },
             series: {
+                1: {
+
+                },
                 2: {
                     targetAxisIndex:1,
                     type:'line'
                 },
+            width: 700,
+            heigh: 700
 
             }
 
@@ -80,7 +80,7 @@
 		<h3>사고유형별 발생 건수 와 사망자 비율을 알아보자.</h3>
 		<div id="piechart_3d" style="width: 900px; height: 500px;"></div>
     <h3> 사고 유형은 보행노인이 가장 많았고, 스쿨존 어린이가 가장 적었다.</h2>
-    <div id="chart_div"></div>
+    <div id="chart_div" style="width: 1000px; height: 800px;"></div>
     <h3> 하지만, 사고 횟수는 적어도 사망자 비율이 가장 높은 사고는 무단횡단이였다.</h2>
 	</div>
 </body>
