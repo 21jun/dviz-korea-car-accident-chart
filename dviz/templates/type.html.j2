@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+  <style>
+  body {
+    margin: 0 auto;
+  }
+  </style>
+  <title>대한민국 교통사고 차트</title>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          {% for key, value in type_data.items() %}
+            {% if value is string %}
+              ['{{ key }}', '{{ value }}'],
+            {% else %}
+              ['{{ key }}', {{ value }}],
+            {% endif %}
+          {% endfor %}
+        ]);
+
+        var options = {
+          title: '사고유형별 발생건수',
+          is3D: true,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        chart.draw(data, options);
+      }
+    </script>
+</head>
+<body>
+	<div>
+		<h3>사고유형별 발생 건수 와 사망자 비율을 알아보자.</h3>
+		<div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+	</div>
+</body>
+</html>
