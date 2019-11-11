@@ -65,13 +65,15 @@ def typeofaccident():
     
     tmp = {}
     for i in accident_type:
-        tmp[i] = count[i]
+        tmp[i] = [count[i], df[df['사고유형구분']==i].sum()['사망자수']]
     tmp = sorted(tmp.items(), key=operator.itemgetter(1), reverse=True)
     
     type_data={}
+    death_cnt={}
     type_data['header'] = "교통사고 종류"
     for i in tmp:
         type_data[i[0]]=i[1]
+        death_cnt[i[0]]=i[1]
 
 
-    return render_template('type.html.j2', type_data=type_data)
+    return render_template('type.html.j2', type_data=type_data, death_cnt = death_cnt)
