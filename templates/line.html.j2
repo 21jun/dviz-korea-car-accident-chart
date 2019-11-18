@@ -1,0 +1,154 @@
+  <html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['hour', '사건발생수'],
+            {% for hr, cnt in overall %}
+                [{{hr}}, {{cnt}}],
+            {% endfor %}
+        ]);
+
+        var options = {
+          title: '시간별 사망교통사고 발생 수 (2012-2018)',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          hAxis: {
+            title: 'Hour'
+          },
+          vAxis: {
+            title: '사건 발생 수'
+          },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['hour', '사건발생수'],
+            {% for hr, cnt in speeding %}
+                [{{hr}}, {{cnt}}],
+            {% endfor %}
+        ]);
+
+        var options = {
+          title: '시간별 과속 사고 발생 수 (2012-2018)',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          hAxis: {
+            title: 'Hour'
+          },
+          vAxis: {
+            title: '사건 발생 수'
+          },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart2'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['hour', '사건발생수'],
+            {% for hr, cnt in signal %}
+                [{{hr}}, {{cnt}}],
+            {% endfor %}
+        ]);
+
+        var options = {
+          title: '시간별 신호위반 사고 발생 수 (2012-2018)',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          hAxis: {
+            title: 'Hour'
+          },
+          vAxis: {
+            title: '사건 발생 수'
+          },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart3'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['1','2'],
+            {% for key, value in type%}
+                ['{{key}}', {{value}}],
+            {% endfor %}
+        ]);
+
+        var options = {
+          title: '유형별 사고 발생 수 (2012-2018)',
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['hour', '과속','신호위반','보행자 보호의무 위반', '중앙선 침범'],
+            {% for hr, cnt1, cnt2, cnt3, cnt4 in every %}
+                [{{hr}}, {{cnt1}}, {{cnt2}}, {{cnt3}}, {{cnt4}}],
+            {% endfor %}
+        ]);
+
+        var options = {
+          title: '시간별, 유형별 사고 발생 수 (2012-2018)',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          hAxis: {
+            title: 'Hour'
+          },
+          vAxis: {
+            title: '사건 발생 수'
+          },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart4'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <h3>모든 사고에대해 시간순으로 발생 건수를 나타내어 보자.</h3>
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+    <h3>전체적인 사고는 오전6시와 오후6시에 가장 많이 발생한다.</h3>
+    <div id="piechart" style="width: 900px; height: 500px"></div>
+    <h3>그렇다면 사고의 유형별로 사고 횟수를 시각화하여 언제 어떤 단속을 집중적으로 수행하야 할지 알아보자</h3>
+    <h3>가장 비율이 큰 과속, 신호위반, 중앙선 침범, 보행자 보호의무 위반에 대해서 시간대별로 발생 건수를 그려보았다. </h3>
+    <div id="curve_chart4" style="width: 900px; height: 500px"></div>
+    <h3>특정 시간에 Peak를 보이는 유형들에 대해서,</h3>
+    <h3>오전 6시에는 신호위반, 오후 6시에는 보행자(횡단보도), 오후 8시에는 과속 단속을 강화하면 </h3>
+    <h3>효과적으로 사고를 예방할 수 있을것이다. </h3>
+  </body>
+</html>

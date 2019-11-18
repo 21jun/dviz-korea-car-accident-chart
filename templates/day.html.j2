@@ -1,0 +1,39 @@
+  <html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['요일', '야', '주' ],
+          {% for day, night, noon in data %}
+            ['{{day}}', {{night}}, {{noon}}],
+          {% endfor %}
+        ]);
+
+        var options = {
+          legend: { position: 'top', maxLines: 3 },
+          vAxis: {
+            title: '사고 발생 수'
+          },
+          hAxis: {
+            title: '요일'
+          },
+
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="curve_chart" style="width: 900px; height: 800px"></div>
+    <h3>토요일 일요일은 야간에 발생하는 사고 발생 수가 주간보다 크게 앞섰다.</h3>
+    <h3>또한 월요일은 주간이 야간보다 많은 사고 발생을 보였다.</h3>
+    <h3>그러므로 월요일 아침과 주말 저녁에 교통안전 예방 단속 강화가 필요하다.</h3>
+  </body>
+</html>
