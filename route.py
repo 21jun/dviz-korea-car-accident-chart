@@ -7,6 +7,27 @@ from flask import Flask
 app = Flask(__name__)
 df = pd.read_csv("data.csv", engine='python', encoding='utf-8-sig')
 
+
+@app.route('/test')
+def test():
+
+    data = []
+    for i in range(3657):
+        a, b, c = df[df['발생년']==2018][['위도','경도','사망자수']].iloc[i]
+        data.append([a, b, c])
+
+    return render_template('test.html.j2', data=data)
+
+@app.route('/deckgl')
+def deckgl():
+
+    data = []
+    for i in range(3657):
+        a, b = df[df['발생년']==2018][['경도','위도']].iloc[i]
+        data.append([a, b])
+
+    return render_template('deckgl.html.j2', data=data)
+
 @app.route('/')
 def front():
 
