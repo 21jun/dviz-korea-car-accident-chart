@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <title>deck.gl ScatterplotLayer Example</title>
+
+    <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
+
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+
+    <style type="text/css">
+      body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+      }
+    </style>
+    <style type="text/css">
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+      }
+
+      #control-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 12px;
+        padding: 20px;
+        font-size: 12px;
+        line-height: 1.5;
+        z-index: 1;
+        background: #fff;
+        font-family: Helvetica, Arial, sans-serif;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+      }
+
+      label {
+        display: inline-block;
+        width: 140px;
+      }
+    </style>
+  </head>
+
+  <body>
+   <div id="control-panel">
+      <div>
+        <h2>보행자 교통사고 유형</h2>
+      </div>
+      <div>
+        <font color="e41a1c"><label>차도 통행중</label></font>
+      </div>
+      <div>
+        <font color="377eb8"><label>횡단중</label></font>
+      </div>
+      <div>
+        <font color="4daf4a"><label>길 가장자리 구역 통행중</label></font>
+      </div>
+      <div>
+        <font color="ff7f00"><label>보도 통행중</label></font>
+    </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+
+    const {DeckGL, ScatterplotLayer} = deck;
+
+    const MALE_COLOR = [0, 128, 255];
+    const FEMALE_COLOR = [255, 0, 128];
+
+
+    function Color(d) {
+      if (d === 0) {
+        return [ 0, 0,0 ]
+      }
+      if (d === 1) {
+        return [228,26,28];
+      }
+      if (d === 2) {
+        return [55,126,184];
+      }
+      if (d === 3) {
+        return [77,175,74]
+      }
+      if (d === 4) {
+        return [255,127,0]
+      }
+      else{
+        return [255,127,0]
+      }
+    }
+
+    data = [
+      {% for lat, long, type in data %}
+          [{{lat}}, {{long}}, {{type}}],
+      {% endfor %}
+    ]
+
+    new DeckGL({
+      mapboxApiAccessToken: 'pk.eyJ1IjoiMjFqdW4iLCJhIjoiY2szZDNlaXA1MTFxbzNqczF4eWVkcGYzeSJ9.5eVqXk18L6HlP2_ITFCYOw',
+      //mapStyle: 'mapbox://styles/mapbox/light-v9',
+      mapStyle: 'mapbox://styles/mapbox/dark-v9',
+      longitude: 126.9392741,
+      latitude: 37.59038756,
+      zoom: 11,
+      maxZoom: 16,
+      layers: [
+        new ScatterplotLayer({
+          id: 'scatter-plot',
+          data: data,
+          radiusScale: 100,
+          radiusMinPixels: 1,
+          getPosition: d => [d[0], d[1], 0],
+          getColor: d => Color(d[2])
+        })
+      ]
+    });
+
+  </script>
+</html>

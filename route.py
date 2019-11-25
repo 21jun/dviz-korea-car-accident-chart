@@ -18,94 +18,60 @@ def test():
 
     return render_template('test.html.j2', data=data)
 
-@app.route('/deckgl')
+@app.route('/all')
 def deckgl():
 
     data = []
-    for i in range(3657):
-        a, b = df[df['발생년']==2018][['경도','위도']].iloc[i]
+    select = df[['경도','위도']]
+    for i in range(len(select)):
+        a, b = select.iloc[i]
         data.append([a, b])
 
-    return render_template('deckgl.html.j2', data=data)
+    return render_template('all.html.j2', data=data)
 
-@app.route('/')
-def front():
+@app.route('/walk')
+def walk():
+    
+    """
+    보행자_type 인코딩
+    (array([0, 1, 2, ..., 2, 0, 1], dtype=int64),
+    Index(['기타', '차도통행중', '횡단중', '길가장자리구역통행중', '보도통행중'], dtype='object'))
+    """
+    data = []
+    df2 = df[df['피해자_당사자종별_대분류']=='보행자']
+    df2['보행자_type'] = pd.factorize(df[df['피해자_당사자종별_대분류']=='보행자']['사고유형_중분류'])[0]
+    select = df2[['경도','위도', '보행자_type']]
+    for i in range(len(select)):
+        a, b , c = select.iloc[i]
+        if c != 0:
+            data.append([a, b, c])
 
-    index1 = list(df.groupby('발생시').count()['주야'].index)
-    value1 = list(df.groupby('발생시').count()['주야'])
-    overall=[]
-    for i in range(len(index1)):
-        overall.append([index1[i], value1[i]])
-
-    index2=(df[df['법규위반']=='과속'].groupby('발생시').count()['주야'].index)
-    value2=(df[df['법규위반']=='과속'].groupby('발생시').count()['주야'])
-    speeding=[]
-    for i in range(len(index2)):
-        speeding.append([index2[i], value2[i]])
-
-    index3=(df[df['법규위반']=='신호위반'].groupby('발생시').count()['주야'].index)
-    value3=(df[df['법규위반']=='신호위반'].groupby('발생시').count()['주야'])
-    signal=[]
-    for i in range(len(index3)):
-        signal.append([index3[i], value3[i]])
+    return render_template('walk.html.j2', data=data)
 
 
-    index4=(df[df['법규위반']=='보행자 보호의무 위반'].groupby('발생시').count()['주야'].index)
-    value4=(df[df['법규위반']=='보행자 보호의무 위반'].groupby('발생시').count()['주야'])
-    pedestrian=[]
-    for i in range(len(index4)):
-        pedestrian.append([index4[i], value4[i]])
+@app.route('/dayandnight')
+def nigth():
+    """
+    Index(['야간', '주간']
+    """
+    data = []
+    df['주야']=df['주야'].map(lambda x: "주간" if x == '주' else x)
+    df['주야']=df['주야'].map(lambda x: "야간" if x == '야' else x)
+    df['주야_type'] = pd.factorize(df['주야'])[0]
+    select =  df[['경도','위도','주야_type']]
+    for i in range(len(select)):
+        a, b, c = select.iloc[i]
+        data.append([a, b, c])
 
-    index5=(df[df['법규위반']=='중앙선 침범'].groupby('발생시').count()['주야'].index)
-    value5=(df[df['법규위반']=='중앙선 침범'].groupby('발생시').count()['주야'])
-    center=[]
-    for i in range(len(index5)):
-        center.append([index5[i], value5[i]])
-
-    every=[]
-    for i in range(len(index2)):
-        every.append([index2[i], value2[i], value3[i], value4[i], value5[i]])
-
-
-    key = (df.groupby('법규위반').count()['주야'].index)
-    val = (df.groupby('법규위반').count()['주야'])
-    type = []
-    for i in range(len(key)):
-        if key[i] == '안전운전 의무 불이행':
-            continue
-        type.append([key[i], val[i]])
-
-    return render_template('line.html.j2',overall=overall, speeding=speeding, signal=signal,center=center, every=every, type=type)
+    return render_template('walk.html.j2', data=data)
 
 @app.route('/day')
 def day():
-    day = ['월','화','수','목','금','토','일']
-    data =[]
-    for i in day:
-        noon = df[((df['주야']=='주')|(df['주야']=='주간'))&(df['요일']==i)].count()['주야']
-        night = df[((df['주야']=='야')|(df['주야']=='야간'))&(df['요일']==i)].count()['주야']
-        data.append([i, night, noon])
 
-    return render_template('day.html.j2', data=data)
-
-
-@app.route('/tree')
-def tree():
     data = []
-    for car in df['피해자_당사자종별_대분류'].unique():
-        if car =='00':
-            continue
-        data.append([car, 'global', 0 , 0])
+    select = df[(df['주야']=='주')|(df['주야']=='주간')][['경도','위도']][['경도','위도']]
+    for i in range(len(select)):
+        a, b = select.iloc[i]
+        data.append([a, b])
 
-    for car in df['피해자_당사자종별_대분류'].unique():
-        if car =='00':
-            continue
-        index = list(df[df['피해자_당사자종별_대분류']==car].groupby('사고유형').count()['주야'].index)
-        index_named = list(df[df['피해자_당사자종별_대분류']==car].groupby('사고유형').count()['주야'].index.map(lambda x: car+'_'+x))
-        df2 = df[df['피해자_당사자종별_대분류']==car].groupby('사고유형').count()['주야']
-        for i, index in enumerate(index):
-            casualty = df[(df['피해자_당사자종별_대분류']==car)&(df['사고유형']==index)].mean()['사상자수']
-            
-            data.append([index_named[i], car ,df2[index], casualty])
-    return render_template('tree.html.j2', data=data)
-    
+    return render_template('day_map.html.j2', data=data)
